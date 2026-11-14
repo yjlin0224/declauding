@@ -1,0 +1,38 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Mirror the latest upstream release
+        id: sync
+        run: .github/scripts/sync-upstream.sh
+
+      - name: Push
+        if: steps.sync.outputs.version != ''
+        run: git push --atomic origin main +upstream "refs/tags/${{ steps.sync.outputs.version }}"
+
+      - name: Create release
+        if: steps.sync.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.sync.outputs.version }}
+          NOTES_FILE: ${{ steps.sync.outputs.notes_file }}
+        run: gh release create "$VERSION" --verify-tag --title "$VERSION" --notes-file "$NOTES_FILE"
