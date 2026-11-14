@@ -125,7 +125,7 @@ clusters of pull request descriptions (43–47), Simon Willison's
 [arXiv 2610.29162](https://arxiv.org/abs/2610.29162) (53–56).
 [`CHANGELOG.md`](CHANGELOG.md) has the history of each addition.
 
-Related skills: [challenging](../challenging) runs an adversarial review of a
+Related skills: [challenging](https://github.com/oaustegard/claude-skills/tree/declauding-v0.14.0/challenging) runs an adversarial review of a
 draft's voice and returns findings rather than text;
-[crafting-instructions](../crafting-instructions) covers prompts, which have a
+[crafting-instructions](https://github.com/oaustegard/claude-skills/tree/declauding-v0.14.0/crafting-instructions) covers prompts, which have a
 different target register.
