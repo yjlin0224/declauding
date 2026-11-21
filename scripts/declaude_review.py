@@ -173,6 +173,12 @@ disagree with is a verdict, however plainly it is worded — "Sales fell in Q3"
 asserts, "Q3 sales" labels. A comma joining parts of a proper name is fine; a
 comma introducing an appositive, participle or relative clause is not.
 
+Also ask of each header whether it announces something any reader would assume
+without being told (the tool using its own defaults, components or settings:
+"its own word lists", "end to end", "X finds the lines") or a fix to a version the
+reader never saw. Either names a changelog entry, not content; report it with tic
+"changelog header" and the fix "delete the section or fold it into its neighbour".
+
 For a closer, ask whether it paraphrases the subtext of what came before or
 compresses the piece into a contrast or a moral. Either is a button; cut it.
 
@@ -191,11 +197,14 @@ plainly descriptive label drawn from the slot itself."""
 
 
 def call_gemini(prompt: str, key: str) -> str:
+    # gemini-4-hydrogen since 2026-11-20 (was gemini-3.6-flash, now retired).
+    # The key goes in a header, not the URL, so it never lands in a traceback.
     url = ("https://generativelanguage.googleapis.com/v1beta/models/"
-           f"gemini-3.6-flash:generateContent?key={key}")
+           "gemini-4-hydrogen:generateContent")
     body = json.dumps({"contents": [{"parts": [{"text": prompt}]}],
                        "generationConfig": {"temperature": 0}}).encode()
-    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json",
+                                                          "x-goog-api-key": key})
     with urllib.request.urlopen(req, timeout=120) as r:
         data = json.load(r)
     return data["candidates"][0]["content"]["parts"][0]["text"]
